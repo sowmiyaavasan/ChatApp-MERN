@@ -77,11 +77,11 @@ const allUsers = asyncHandler(async (req, res) => {
       }
     : {}; //else do nothing
 
-  //get the collection of users who matched the regex query
-  //the result should show the collection except the current user that's logged in
-  //current user id "req.user._id" is obtained through authMiddleware
-  const users = (await User.find(keyword)).find({ _id: { $ne: req.user._id } });
+  //get the list of users who matched the regex query result
+  const users = await User.find(keyword).find({ _id: { $ne: req.user._id } });
   res.send(users);
+  //current user id "req.user._id" is obtained through authMiddleware
+  //the result should show the collection except the current user that's logged in
 });
 
 module.exports = { registerUser, authUser, allUsers };
