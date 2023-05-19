@@ -62,4 +62,26 @@ const authUser = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, authUser };
+const allUsers = asyncHandler(async (req, res) => {
+  //looks for the search attribute in the url
+  const keyword = req.query.search
+    ? {
+        //if search value is present
+        $or: [
+          // Mongodb OR operator
+          // checks if the value in the search attribute matches with the name or email of the User model
+          // and options = i says there should be a case sensitive match
+          { name: { $regex: req.query.search, $options: "i" } },
+          { email: { $regex: req.query.search, $options: "i" } },
+        ],
+      }
+    : {}; //else do nothing
+
+  //get the collection of users who matched the regex query
+  //the result should show the collection except the current user that's logged in
+  //current user id "req.user._id" is obtained through authMiddleware
+  const users = (await User.find(keyword)).find({ _id: { $ne: req.user._id } });
+  res.send(users);
+});
+
+module.exports = { registerUser, authUser, allUsers };
