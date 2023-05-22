@@ -12,7 +12,6 @@ const accessChat = asyncHandler(async (req, res) => {
     return res.sendStatus(400);
   }
 
-  //
   var isChat = await Chat.find({
     //finding chat data satisfying below conditions
     isGroupChat: false, //shound be a 1:1 chat
@@ -59,4 +58,27 @@ const accessChat = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { accessChat };
+const fetchChats = asyncHandler(async (req, res) => {
+  try {
+    //fetch the chat data for the user that's logged in from users array of chat model and send as response
+    Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
+      //populate the result with users, latestMessage and groupAdmin fields with chat data
+      .populate("users", "-password")
+      .populate("groupAdmin", "-password")
+      .populate("latestMessage")
+      .sort({ updatedAt: -1 }) //sort from recent to old
+      .then(async (results) => {
+        results = await User.populate(results, {
+          //populate the existing result with sender's data
+          path: "latestMessage.sender",
+          select: "name pic email",
+        });
+        res.status(200).send(results); //send the result as response
+      });
+  } catch (error) {
+    res.status(400);
+    throw new Error(error.message);
+  }
+});
+
+module.exports = { accessChat, fetchChats };
