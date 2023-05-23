@@ -12,8 +12,20 @@ import {
 } from "@chakra-ui/react";
 import Login from "../components/authentication/Login";
 import Signup from "../components/authentication/Signup";
+import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 
 const HomePage = () => {
+  const history = useHistory();
+
+  useEffect(() => {
+    //if user is logged in push to chat page directly
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+    if (user) {
+      history.push("/chats");
+    }
+  }, [history]);
+
   return (
     <Container maxW="xl" centerContent>
       <Box
