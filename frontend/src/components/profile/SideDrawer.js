@@ -11,6 +11,7 @@ import { Tooltip } from "@chakra-ui/tooltip";
 import { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
+import ProfileModal from "../modal/ProfileModal";
 
 const SideDrawer = () => {
   const [search, setSearch] = useState("");
@@ -59,7 +60,9 @@ const SideDrawer = () => {
               />
             </MenuButton>
             <MenuList>
-              <MenuItem>My Profile</MenuItem>
+              <ProfileModal user={user}>
+                <MenuItem>My Profile</MenuItem>
+              </ProfileModal>
               <MenuDivider />
               <MenuItem>Logout</MenuItem>
             </MenuList>
