@@ -6,6 +6,8 @@ const ChatContext = createContext(); //creating a context API which is used by u
 const ChatProvider = ({ children }) => {
   const [user, setUser] = useState();
   const history = useHistory();
+  const [selectedChat, setSelectedChat] = useState();
+  const [chats, setChats] = useState([]);
 
   //if user is logged in, set the user
   useEffect(() => {
@@ -21,7 +23,9 @@ const ChatProvider = ({ children }) => {
 
   //children is our entire app and ChatProvider is a wrapper for entire app
   return (
-    <ChatContext.Provider value={{ user, setUser }}>
+    <ChatContext.Provider
+      value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats }}
+    >
       {children}
     </ChatContext.Provider>
   );
